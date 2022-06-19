@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Search } from '../search';
-import { SearchResponse } from '../searchResponse';
-import { SearchResult } from '../searchResult';
-import { SearchService } from '../search.service';
+import { Search } from '../../models/search';
+import { SearchResponse } from '../../models/searchResponse';
+import { SearchResult } from '../../models/searchResult';
+import { SearchService } from '../../services/search.service';
 
 
 @Component({

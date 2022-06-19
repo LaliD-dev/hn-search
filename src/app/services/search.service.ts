@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { map, Observable, of } from 'rxjs';
-import { SearchResponse } from './searchResponse';
-import { SearchResult } from './searchResult';
+import { SearchResponse } from '../models/searchResponse';
+import { SearchResult } from '../models/searchResult';
 
 @Injectable({
   providedIn: 'root'
