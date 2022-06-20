@@ -1,0 +1,28 @@
+<div *ngIf="searchResults.length > 0" class="results">
+  <div class="d-flex flex-row mt-3 mb-3">
+    <h3>Results</h3>
+  </div>
+  <table class="table table-striped table-sm pt-1">
+      <tbody>
+        <tr *ngFor="let searchResult of searchResults">
+          <td>
+              <strong>{{searchResult.title}}</strong>
+              <p>{{searchResult.url}}</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  <nav aria-label="...">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [ngClass]="{'disabled':leftIndex == 0}">
+          <button class="page-link" (click)="changePageRange(-1)">Previous</button>
+        </li>
+        <li *ngFor="let pageNumber of pageNumbersToShow" class="page-item" [ngClass]="{'active':pageNumber === currentIndex+1}">
+          <button class="page-link" (click)="changePage(pageNumber)">{{pageNumber}}</button>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':leftIndex == totalPages-3}">
+          <button class="page-link" (click)="changePageRange(1)">Next</button>
+        </li>
+      </ul>
+    </nav>
+</div>

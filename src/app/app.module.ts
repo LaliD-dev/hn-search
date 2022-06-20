@@ -2,24 +2,29 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+import { StoreModule } from '@ngrx/store';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { SearchComponent } from './search/search.component';
-import { HistoryComponent } from './history/history.component';
+import { SearchComponent } from './components/search/search.component';
+import { HistoryComponent } from './components/history/history.component';
+import { reducer } from './store/reducers';
+import { SearchResultsComponent } from './components/search-results/search-results.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchComponent,
-    HistoryComponent
+    HistoryComponent,
+    SearchResultsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StoreModule.forRoot({reducer: reducer})
   ],
   providers: [],
   bootstrap: [AppComponent]
