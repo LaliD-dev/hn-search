@@ -1,0 +1,26 @@
+<div *ngIf="searchResults.length > 0" class="results">
+    <h3>Results</h3>
+    <table class="table">
+        <tbody>
+          <tr *ngFor="let searchResult of searchResults">
+            <td>
+                <p><strong>{{searchResult.title}}</strong></p>
+                <p>{{searchResult.url}}</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    <nav aria-label="...">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [ngClass]="{'disabled':leftIndex == 0}">
+            <button class="page-link" (click)="changePageRange(-1)">Previous</button>
+          </li>
+          <li *ngFor="let pageNumber of pageNumbersToShow" class="page-item" [ngClass]="{'active':pageNumber === currentIndex+1}">
+            <button class="page-link" (click)="changePage(pageNumber)">{{pageNumber}}</button>
+          </li>
+          <li class="page-item" [ngClass]="{'disabled':leftIndex == totalPages-3}">
+            <button class="page-link" (click)="changePageRange(1)">Next</button>
+          </li>
+        </ul>
+      </nav>
+</div>

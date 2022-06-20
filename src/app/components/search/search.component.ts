@@ -1,11 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Search } from '../../models/search';
 import { SearchResponse } from '../../models/searchResponse';
 import { SearchResult } from '../../models/searchResult';
+import { SearchResultsComponent } from '../search-results/search-results.component';
 import { SearchService } from '../../services/search.service';
-
-
 
 @Component({
   selector: 'app-search',
@@ -20,14 +19,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   beginDateControl = new FormControl('');
   endDateControl = new FormControl('');
 
-  totalPages = 0;
-  pageSize = 20;
-  hits = 0;
+  @ViewChild('searchResultsGrid')  searchResultsGrid!: SearchResultsComponent;
 
-  currentIndex = 0;
-  leftIndex = 0;
+  totalPages = 0;
   pageNumbers: number[] = [];
-  pageNumbersToShow: number[] = [];
+  searchResults: SearchResult[]  = [ ];
 
   search : Search = {
     query: '',
@@ -37,11 +33,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     page: 0
   }
 
-  searchResults: SearchResult[]  = [ ];
-
   constructor(private searchService: SearchService ) {
-    this.currentIndex = 0;
-    this.leftIndex = 0;
+
   }
 
   ngOnInit(): void {
@@ -52,22 +45,11 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.search.query = this.searchTermControl.value ?? '';
 
     this.searchService.getSearchResponse(this.search)
-    .subscribe((data: SearchResponse) =>
-      {
-        this.searchResults = data.hits;
-        this.totalPages = data.nbPages;
-        this.pageSize = data.hitsPerPage;
-        this.hits = data.nbHits;
-
-        this.search.page = data.page;
-        this.currentIndex = data.page;
-
-        this.pageNumbers = Array(this.totalPages).fill(0).map((x, i) => (i + 1));
-        let clonedPageNumbers = [...this.pageNumbers];
-        this.pageNumbersToShow = clonedPageNumbers.splice(this.leftIndex, 3);
-
-        console.log(this.pageNumbersToShow);
-        console.log(this.searchResults);
+      .subscribe((data: SearchResponse) =>
+        {
+          this.searchResults = data.hits;
+          this.totalPages = data.nbPages;
+          this.pageNumbers = Array(data.nbPages).fill(0).map((x, i) => (i + 1));
         }
     )
   }
@@ -84,16 +66,11 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.search.tags.splice(index, 1);
   }
 
-  changePageRange(increment: number): void {
-    if (increment < 0 && this.leftIndex > 0) {
-      this.leftIndex -= 1;
-    }
-    else if (this.leftIndex < this.totalPages - 1) {
-      this.leftIndex += 1;
-    }
+  updateSearchResults(pageNumber: number): void {
+    this.search.page = pageNumber - 1;
+    this.performSearch();
   }
 
   ngOnDestroy(): void {
-    // unsubscribe
   }
 }

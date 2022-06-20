@@ -8,13 +8,15 @@ import { AppComponent } from './app.component';
 import { SearchComponent } from './components/search/search.component';
 import { HistoryComponent } from './components/history/history.component';
 import { reducer } from './store/reducers';
+import { SearchResultsComponent } from './components/search-results/search-results.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchComponent,
-    HistoryComponent
+    HistoryComponent,
+    SearchResultsComponent
   ],
   imports: [
     BrowserModule,

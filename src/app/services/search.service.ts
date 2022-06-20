@@ -6,6 +6,7 @@ import { AddSearch } from '../store/actions';
 import { SearchResponse } from '../models/searchResponse';
 import { SearchResult } from '../models/searchResult';
 import { Search } from '../models/search';
+import { SearchState } from '../store/search.state';
 
 @Injectable({
   providedIn: 'root'
@@ -15,18 +16,16 @@ export class SearchService {
   private searchUrl = 'http://hn.algolia.com/api/v1/search?';
   private searchByDateUrl = 'http://hn.algolia.com/api/v1/search_by_date?';
 
-  searches: string[] = ['http://hn.algolia.com/api/v1/search?query=foo',
-'http://hn.algolia.com/api/v1/search?query=bar']
-
   constructor(
     private http: HttpClient,
-    private store: Store) { }
+    private store: Store<SearchState>) { }
 
   getSearchResponse(search: Search): Observable<SearchResponse> {
+    // save query
     const url = this.constructQuery(search);
-    console.log(url)
     this.store.dispatch(AddSearch({url}));
 
+    // perform search
     return this.http.get<SearchResponse>(url);
   }
 
@@ -34,6 +33,10 @@ export class SearchService {
     let query = ''
     if (search.query && search.query != '') {
       query  = "query=" + (search.query ?? '');
+    }
+
+    if (search.page) {
+      query = query + '&page=' + search.page;
     }
     return  this.searchUrl + query ;
   }
@@ -44,10 +47,5 @@ export class SearchService {
 
   convertToSeconds(dateToConvert: Date): number {
     return dateToConvert.getTime()/1000;
-  }
-
-  getSearches(): Observable<string[]> {
-    console.log(this.searches)
-    return of(this.searches);
   }
 }
