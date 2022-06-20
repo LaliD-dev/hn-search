@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, AfterViewInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { SearchResult } from 'src/app/models/searchResult';
 
@@ -7,7 +7,7 @@ import { SearchResult } from 'src/app/models/searchResult';
   templateUrl: './search-results.component.html',
   styleUrls: ['./search-results.component.scss']
 })
-export class SearchResultsComponent implements OnInit, AfterViewInit {
+export class SearchResultsComponent implements OnInit {
 
   currentIndex = 0;
   leftIndex = 0;
@@ -22,21 +22,17 @@ export class SearchResultsComponent implements OnInit, AfterViewInit {
   searchResults$: Observable<SearchResult[]> = of(this.searchResults);
 
   constructor() {
-    this.searchResults$    
-      .pipe()
-      .subscribe(
-        () => {this.setPageNumbersToShow()}
-      );
+
   }
 
   ngOnInit(): void {
 
   }
 
-  ngAfterViewInit(): void {
-    console.log(this.pageNumbersToShow);
-    this.setPageNumbersToShow()
-    console.log(this.pageNumbersToShow)
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes) {
+      this.setPageNumbersToShow();
+    }
   }
 
   changePageRange(increment: number): void {
