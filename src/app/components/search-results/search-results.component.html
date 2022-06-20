@@ -1,12 +1,12 @@
 <div *ngIf="searchResults.length > 0" class="results">
-  <div class="mt-5 mb-5">
+  <div class="d-flex flex-row mt-3 mb-3">
     <h3>Results</h3>
   </div>
   <table class="table table-striped table-sm pt-1">
       <tbody>
         <tr *ngFor="let searchResult of searchResults">
           <td>
-              <p><strong>{{searchResult.title}}</strong></p>
+              <strong>{{searchResult.title}}</strong>
               <p>{{searchResult.url}}</p>
           </td>
         </tr>
