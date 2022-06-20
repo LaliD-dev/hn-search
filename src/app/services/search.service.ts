@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { map, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AddSearch } from '../store/actions';
 import { SearchResponse } from '../models/searchResponse';
-import { SearchResult } from '../models/searchResult';
 import { Search } from '../models/search';
 import { SearchState } from '../store/search.state';
 
@@ -21,28 +20,42 @@ export class SearchService {
     private store: Store<SearchState>) { }
 
   getSearchResponse(search: Search): Observable<SearchResponse> {
-    // save query
+    // add query to store
     const url = this.constructQuery(search);
     this.store.dispatch(AddSearch({url}));
+    console.log(url)
 
     // perform search
     return this.http.get<SearchResponse>(url);
   }
 
   constructQuery(search: Search): string {
-    let query = ''
-    if (search.query && search.query != '') {
+    let query = '';
+
+    if (search.query && search.query !== '') {
       query  = "query=" + (search.query ?? '');
     }
 
     if (search.page) {
       query = query + '&page=' + search.page;
     }
-    return  this.searchUrl + query ;
-  }
 
-  constructDateFilter(): string {
-    return '';
+    if (search.tags && search.tags.length > 0) {
+      let tagsString = '(' + search.tags.join(',') + ')';
+      query = query + '&tags=' + tagsString;
+    }
+
+    if (search.begin_date) {
+      query = query + '&numericFilters=created_at_i>=' + this.convertToSeconds(search.begin_date);
+      if (search.end_date) {
+        query = query + ',created_at_i<=' + this.convertToSeconds(search.end_date);
+      }
+    }
+    else if (search.end_date) {
+      query = query + '&numericFilters=created_at_i<=' + this.convertToSeconds(search.end_date);
+    }
+
+    return ((search.begin_date || search.end_date) ? this.searchByDateUrl : this.searchUrl) + query ;
   }
 
   convertToSeconds(dateToConvert: Date): number {

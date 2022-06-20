@@ -43,6 +43,12 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   performSearch(): void {
     this.search.query = this.searchTermControl.value ?? '';
+    if (this.beginDateControl.value) {
+      this.search.begin_date = this.getSearchDate(this.beginDateControl.value);
+    }
+    if (this.endDateControl.value) {
+      this.search.end_date = this.getSearchDate(this.endDateControl.value);
+    }
 
     this.searchService.getSearchResponse(this.search)
       .subscribe((data: SearchResponse) =>
@@ -52,6 +58,12 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.pageNumbers = Array(data.nbPages).fill(0).map((x, i) => (i + 1));
         }
     )
+  }
+
+  getSearchDate(value: string): Date {
+    let newDate = new Date(value);
+
+    return newDate;
   }
 
   addChip(tag: string): void {
@@ -69,6 +81,21 @@ export class SearchComponent implements OnInit, OnDestroy {
   updateSearchResults(pageNumber: number): void {
     this.search.page = pageNumber - 1;
     this.performSearch();
+  }
+
+  clear(): void {
+    this.totalPages = 0;
+    this.pageNumbers = [];
+    this.searchResults  = [ ];
+
+    this.searchTermControl.setValue('');
+    this.beginDateControl.setValue('');
+    this.endDateControl.setValue('');
+    
+    this.search.tags = [];
+    this.search.begin_date = null;
+    this.search.end_date = null;
+    this.search.page = 0;
   }
 
   ngOnDestroy(): void {

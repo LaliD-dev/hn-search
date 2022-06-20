@@ -5,45 +5,51 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <h3>Search criteria</h3>
-    <div class="container">
-        <div class="form-group">
-            <label for="searchTerm">Query term</label>
-            <input id="searchTerm" type="text" [formControl]="searchTermControl" class="form-control">
+    <div class="d-flex flex-row justify-content-between align-items-center">
+        <div class="d-flex justify-content-start">
+            <h3>Search criteria</h3>
         </div>
-
-        <div class="form-group">
-            <label for="tags">Tags</label>
-            <div class="d-flex flex-row flex-wrap">
-                <div *ngFor="let tag of tagsList" class="chip bg-light">
-                    {{tag}}
-                    <i class="fa fa-plus" (click)="addChip(tag)"></i>
-                </div>
-            </div>
-            <div class="d-flex flex-row flex-wrap">
-                <div *ngIf="search.tags.length > 0">Tags to search for:</div>
-                <div *ngFor="let tag of search.tags; let i = index" class="chip bg-primary">
-                    {{tag}}
-                    <i id="tag" class="fa fa-minus" (click)="removeChip(i)"></i>
-                </div>
-            </div>
+        <div class="d-flex justify-content-end">
+            <button type="button" (click)="performSearch()" class="btn btn-primary">Search</button>
+            <button type="button" (click)="clear()" class="btn btn-primary">Clear</button>
         </div>
-
-        <div class="form-group">
-            <label for="beginDate">Begin date</label>
-            <input id="beginDate" type="date" [formControl]="beginDateControl" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label for="endDate">End date</label>
-            <input id="endDate"  type="date" [formControl]="endDateControl" class="form-control">
-        </div>
-
-        <button type="button" (click)="performSearch()" class="btn btn-primary">Search</button>
     </div>
+
+    <div class="form-group">
+        <label for="searchTerm">Query term</label>
+        <input id="searchTerm" type="text" [formControl]="searchTermControl" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label for="tags">Tags</label>
+        <div class="d-flex flex-row flex-wrap">
+            <div *ngFor="let tag of tagsList" class="chip bg-light">
+                {{tag}}
+                <i class="fa fa-plus" (click)="addChip(tag)"></i>
+            </div>
+        </div>
+        <div class="d-flex flex-row flex-wrap">
+            <div *ngIf="search.tags.length > 0">Tags to search for:</div>
+            <div *ngFor="let tag of search.tags; let i = index" class="chip bg-primary">
+                {{tag}}
+                <i id="tag" class="fa fa-minus" (click)="removeChip(i)"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="beginDate">Begin date</label>
+        <input id="beginDate" type="date" [formControl]="beginDateControl" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label for="endDate">End date</label>
+        <input id="endDate"  type="date" [formControl]="endDateControl" class="form-control">
+    </div>
+
     <app-search-results
         #searchResultsGrid
-        [searchResults]="searchResults" 
+        [searchResults]="searchResults"
         [pageNumbers]="pageNumbers"
         (pageNumberChanged)="updateSearchResults($event)"
         [totalPages]="totalPages">
