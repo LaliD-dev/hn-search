@@ -6,6 +6,7 @@ import { SearchResult } from '../../models/searchResult';
 import { SearchService } from '../../services/search.service';
 
 
+
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -16,11 +17,17 @@ export class SearchComponent implements OnInit, OnDestroy {
   tagsList = ['story', 'comment', 'poll', 'pollopt', 'show_hn', 'ask_hn', 'front_page', 'author']
 
   searchTermControl = new FormControl('')
-  tagsControl = new FormControl('');
   beginDateControl = new FormControl('');
   endDateControl = new FormControl('');
-  greaterThanControl = new FormControl('');
-  lessThanControl = new FormControl('');
+
+  totalPages = 0;
+  pageSize = 20;
+  hits = 0;
+
+  currentIndex = 0;
+  leftIndex = 0;
+  pageNumbers: number[] = [];
+  pageNumbersToShow: number[] = [];
 
   search : Search = {
     query: '',
@@ -33,6 +40,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchResults: SearchResult[]  = [ ];
 
   constructor(private searchService: SearchService ) {
+    this.currentIndex = 0;
+    this.leftIndex = 0;
   }
 
   ngOnInit(): void {
@@ -42,17 +51,28 @@ export class SearchComponent implements OnInit, OnDestroy {
   performSearch(): void {
     this.search.query = this.searchTermControl.value ?? '';
 
-    this.searchService.getSearchResponse(this.search.query)
+    this.searchService.getSearchResponse(this.search)
     .subscribe((data: SearchResponse) =>
       {
         this.searchResults = data.hits;
+        this.totalPages = data.nbPages;
+        this.pageSize = data.hitsPerPage;
+        this.hits = data.nbHits;
+
+        this.search.page = data.page;
+        this.currentIndex = data.page;
+
+        this.pageNumbers = Array(this.totalPages).fill(0).map((x, i) => (i + 1));
+        let clonedPageNumbers = [...this.pageNumbers];
+        this.pageNumbersToShow = clonedPageNumbers.splice(this.leftIndex, 3);
+
+        console.log(this.pageNumbersToShow);
         console.log(this.searchResults);
         }
     )
   }
 
   addChip(tag: string): void {
-    // check if tag already exists
     let found = this.search.tags.find(item => item == tag);
 
     if (found === undefined) {
@@ -62,6 +82,15 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   removeChip(index: any): void {
     this.search.tags.splice(index, 1);
+  }
+
+  changePageRange(increment: number): void {
+    if (increment < 0 && this.leftIndex > 0) {
+      this.leftIndex -= 1;
+    }
+    else if (this.leftIndex < this.totalPages - 1) {
+      this.leftIndex += 1;
+    }
   }
 
   ngOnDestroy(): void {

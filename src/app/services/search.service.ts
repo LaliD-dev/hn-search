@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { map, Observable, of } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AddSearch } from '../store/actions';
 import { SearchResponse } from '../models/searchResponse';
 import { SearchResult } from '../models/searchResult';
+import { Search } from '../models/search';
 
 @Injectable({
   providedIn: 'root'
@@ -16,18 +19,22 @@ export class SearchService {
 'http://hn.algolia.com/api/v1/search?query=bar']
 
   constructor(
-    private http: HttpClient) { }
+    private http: HttpClient,
+    private store: Store) { }
 
-  getSearchResponse(searchTerm: string): Observable<SearchResponse> {
-    const url = this.constructQuery(searchTerm);
+  getSearchResponse(search: Search): Observable<SearchResponse> {
+    const url = this.constructQuery(search);
     console.log(url)
-    this.searches.push(url)
+    this.store.dispatch(AddSearch({url}));
 
     return this.http.get<SearchResponse>(url);
   }
 
-  constructQuery(searchTerm: string): string {
-    const query  = "query=" + (searchTerm ?? '');
+  constructQuery(search: Search): string {
+    let query = ''
+    if (search.query && search.query != '') {
+      query  = "query=" + (search.query ?? '');
+    }
     return  this.searchUrl + query ;
   }
 

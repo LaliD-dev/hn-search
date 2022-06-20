@@ -1,5 +1,5 @@
-<div>
-    <ul *ngFor="let search of searches$ | async">
+<div *ngIf="searches$ | async as searches">
+    <ul *ngFor="let search of searches">
         <li>{{search}}</li>
     </ul>
 </div>

@@ -16,8 +16,8 @@
             <div class="d-flex flex-row flex-wrap">
                 <div *ngFor="let tag of tagsList" class="chip bg-light">
                     {{tag}}
-                    <i class="fa fa-plus" (click)="addChip(tag)"></i>    
-                </div>    
+                    <i class="fa fa-plus" (click)="addChip(tag)"></i>
+                </div>
             </div>
             <div class="d-flex flex-row flex-wrap">
                 <div *ngIf="search.tags.length > 0">Tags to search for:</div>
@@ -30,12 +30,12 @@
 
         <div class="form-group">
             <label for="beginDate">Begin date</label>
-            <input id="beginDate" type="date" [formControl]="beginDateControl" class="form-control">    
+            <input id="beginDate" type="date" [formControl]="beginDateControl" class="form-control">
         </div>
 
         <div class="form-group">
             <label for="endDate">End date</label>
-            <input id="endDate"  type="date" [formControl]="endDateControl" class="form-control">    
+            <input id="endDate"  type="date" [formControl]="endDateControl" class="form-control">
         </div>
 
         <button type="button" (click)="performSearch()" class="btn btn-primary">Search</button>
@@ -52,8 +52,20 @@
                 </div>
             </li>
         </ul>
+        <nav aria-label="...">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" (click)="changePageRange(-1)">Previous</a>
+              </li>
+              <li *ngFor="let pageNumber of pageNumbersToShow" class="page-item" [ngClass]="{'active': pageNumber == this.search.page}">
+                <a class="page-link" >{{pageNumber}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" (click)="changePageRange(1)">Next</a>
+              </li>
+            </ul>
+          </nav>
     </div>
-    
 </body>
 </html>
 
